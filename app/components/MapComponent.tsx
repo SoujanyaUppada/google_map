@@ -17,19 +17,16 @@ const buttonStyle = {
   margin: '10px',  
 };
 
-interface APIData {
+interface Property {
   id: number;
-  lat: string;
-  long: string;
-  total_land_size_in_acres: {
-    acres: number;
-    guntas: number;
-  };
-  price_per_acre_crore: {
-    lakh: number;
-  };
+  latitude: number;
+  longitude: number;
+  totalLandSizeInAcres: string;
+  pricePerAcre: string;
+  tooltipText: string;
   district: string;
-  highway_facing: boolean;
+  guntas: number;
+  highwayFacing: boolean;
 }
 
 const center = {
@@ -66,8 +63,8 @@ const MapComponent: React.FC = () => {
   useEffect(() => {
     fetch('https://prod-be.1acre.in/lands/landmaps/?seller_id=211')
       .then(response => response.json())
-      .then((data: Property[]) => { // Explicitly defining the expected type of data array
-        const properties = data.map(item => ({
+      .then(data => {
+        const properties = data.map((item: any) => ({
           id: item.id,
           latitude: parseFloat(item.lat),
           longitude: parseFloat(item.long),
