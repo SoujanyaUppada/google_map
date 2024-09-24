@@ -48,8 +48,8 @@ const options = {
 };
 
 const MapComponent: React.FC = () => {
-  const [properties, setProperties] = useState<Property[]>([]);
-  const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
+  const [properties, setProperties] = useState<ApiResponseItem[]>([]);
+  const [selectedProperty, setSelectedProperty] = useState<ApiResponseItem | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const mapRef = useRef<google.maps.Map | null>(null);
 
@@ -58,7 +58,7 @@ const MapComponent: React.FC = () => {
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!
   });
 
-  const handleViewDetailsClick = (property: Property) => {
+  const handleViewDetailsClick = (property: ApiResponseItem) => {
     setSelectedProperty(property);
     setDrawerOpen(true);
   };
@@ -68,8 +68,8 @@ const MapComponent: React.FC = () => {
       .then(data => {
         const properties = data.map((item: ApiResponseItem) => ({
           id: item.id,
-          latitude: parseFloat(item.lat),
-          longitude: parseFloat(item.long),
+          latitude: item.lat,
+          longitude: item.long,
           totalLandSizeInAcres: `${item.total_land_size_in_acres.acres} Acres, ${item.total_land_size_in_acres.guntas} Guntas`,
           pricePerAcre: `₹ ${item.price_per_acre_crore.lakh * 100} lakhs per acre`,
           tooltipText: `${item.total_land_size_in_acres.acres} Acres, ${item.total_land_size_in_acres.guntas} Guntas - ₹ ${item.price_per_acre_crore.lakh * 100} lakhs per acre`,
