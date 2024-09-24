@@ -17,19 +17,16 @@ const buttonStyle = {
   margin: '10px',  
 };
 
-interface ApiResponseItem {
+interface Property {
   id: number;
-  lat: number; 
-  long: number; 
-  total_land_size_in_acres: {
-    acres: number;
-    guntas: number;
-  };
-  price_per_acre_crore: {
-    lakh: number;
-  };
+  latitude: number;
+  longitude: number;
+  totalLandSizeInAcres: string;
+  pricePerAcre: string;
+  tooltipText: string;
   district: string;
-  highway_facing: boolean;
+  guntas: number;
+  highwayFacing: boolean;
 }
 
 const center = {
@@ -48,8 +45,8 @@ const options = {
 };
 
 const MapComponent: React.FC = () => {
-  const [properties, setProperties] = useState<ApiResponseItem[]>([]);
-  const [selectedProperty, setSelectedProperty] = useState<ApiResponseItem | null>(null);
+  const [properties, setProperties] = useState<Property[]>([]);
+  const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const mapRef = useRef<google.maps.Map | null>(null);
 
@@ -58,18 +55,19 @@ const MapComponent: React.FC = () => {
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!
   });
 
-  const handleViewDetailsClick = (property: ApiResponseItem) => {
+  const handleViewDetailsClick = (property: Property) => {
     setSelectedProperty(property);
     setDrawerOpen(true);
   };
+
   useEffect(() => {
     fetch('https://prod-be.1acre.in/lands/landmaps/?seller_id=211')
       .then(response => response.json())
       .then(data => {
-        const properties = data.map((item: ApiResponseItem) => ({
+        const properties = data.map((item: any) => ({
           id: item.id,
-          latitude: item.lat,
-          longitude: item.long,
+          latitude: parseFloat(item.lat),
+          longitude: parseFloat(item.long),
           totalLandSizeInAcres: `${item.total_land_size_in_acres.acres} Acres, ${item.total_land_size_in_acres.guntas} Guntas`,
           pricePerAcre: `₹ ${item.price_per_acre_crore.lakh * 100} lakhs per acre`,
           tooltipText: `${item.total_land_size_in_acres.acres} Acres, ${item.total_land_size_in_acres.guntas} Guntas - ₹ ${item.price_per_acre_crore.lakh * 100} lakhs per acre`,
