@@ -17,16 +17,19 @@ const buttonStyle = {
   margin: '10px',  
 };
 
-interface Property {
+interface ApiResponseItem {
   id: number;
-  latitude: number;
-  longitude: number;
-  totalLandSizeInAcres: string;
-  pricePerAcre: string;
-  tooltipText: string;
+  lat: number; 
+  long: number; 
+  total_land_size_in_acres: {
+    acres: number;
+    guntas: number;
+  };
+  price_per_acre_crore: {
+    lakh: number;
+  };
   district: string;
-  guntas: number;
-  highwayFacing: boolean;
+  highway_facing: boolean;
 }
 
 const center = {
@@ -59,12 +62,11 @@ const MapComponent: React.FC = () => {
     setSelectedProperty(property);
     setDrawerOpen(true);
   };
-
   useEffect(() => {
     fetch('https://prod-be.1acre.in/lands/landmaps/?seller_id=211')
       .then(response => response.json())
       .then(data => {
-        const properties = data.map((item: any) => ({
+        const properties = data.map((item: ApiResponseItem) => ({
           id: item.id,
           latitude: parseFloat(item.lat),
           longitude: parseFloat(item.long),
