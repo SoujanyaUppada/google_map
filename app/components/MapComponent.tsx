@@ -17,6 +17,22 @@ const buttonStyle = {
   margin: '10px',  
 };
 
+interface LandMapItem {
+  id: number;
+  lat: string;
+  long: string;
+  total_land_size_in_acres: {
+    acres: number;
+    guntas: number;
+  };
+  price_per_acre_crore: {
+    lakh: number;
+  };
+  district: string;
+  highway_facing: boolean;
+}
+
+
 interface Property {
   id: number;
   latitude: number;
@@ -64,7 +80,7 @@ const MapComponent: React.FC = () => {
     fetch('https://prod-be.1acre.in/lands/landmaps/?seller_id=211')
       .then(response => response.json())
       .then(data => {
-        const properties = data.map((item: any) => ({
+        const properties = data.map((item: LandMapItem) => ({
           id: item.id,
           latitude: parseFloat(item.lat),
           longitude: parseFloat(item.long),
